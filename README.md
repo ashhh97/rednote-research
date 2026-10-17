@@ -45,11 +45,20 @@ npx playwright install chromium
 
 ### 3. 登录一次小红书
 
-仍在项目文件夹中运行：
+先确认你的账号能在哪个网页版正常登录。**登录时打开的网站和后面 Codex 配置的 `XHS_WEB_ORIGIN` 必须相同**；否则即使保存了登录态，搜索时仍可能显示未登录。
+
+| 账号可登录的网站 | 登录命令中的网站地址 | Codex 配置中的 `XHS_WEB_ORIGIN` |
+| --- | --- | --- |
+| 美区账号常用的 Rednote 网页版 | `https://www.rednote.com` | `https://www.rednote.com` |
+| 小红书网页版 | `https://www.xiaohongshu.com` | `https://www.xiaohongshu.com` |
+
+以美区账号为例，仍在项目文件夹中运行：
 
 ```bash
-XHS_AUTH_DIR=xhs-auth-test PLAYWRIGHT_BROWSERS_PATH=./.playwright-browsers node scripts/login-xhs.js --wait=300000
+XHS_WEB_ORIGIN=https://www.rednote.com XHS_AUTH_DIR=xhs-auth-test PLAYWRIGHT_BROWSERS_PATH=./.playwright-browsers node scripts/login-xhs.js --wait=300000
 ```
+
+如果你的账号只能在 `www.xiaohongshu.com` 登录，把上面命令中的 `https://www.rednote.com` 改成 `https://www.xiaohongshu.com`，并在下面的 Codex 配置中做同样修改。以实际能够登录的站点为准，不要只凭手机号归属地判断。
 
 这会打开一个小红书网页：
 
@@ -115,6 +124,7 @@ XHS_SEARCH_TIMEOUT_MS = "15000"
 ```
 
 例如，`<项目绝对路径>` 如果是 `/Users/you/Documents/rednote-research`，就替换成完整的这段路径。不要保留尖括号。
+`XHS_WEB_ORIGIN` 要与第 3 步登录时选择的网站一致。切换网站后，请用新的 `XHS_WEB_ORIGIN` 重新运行登录命令，确认终端再次显示 `登录态已保存`，然后重启 Codex。
 
 ### 4. 完全退出并重新打开 Codex
 
