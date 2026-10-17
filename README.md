@@ -1,0 +1,173 @@
+# Rednote Research
+
+用你自己的小红书（Rednote）登录态，搜索并阅读笔记详情，然后让 Codex 基于真实笔记做总结。
+
+它适合问：
+
+- “小红书搜索苏黎世一日游，读高赞笔记并总结大家都去哪。”
+- “济州岛咖啡厅，看看大家为什么去，给我原笔记链接和图片。”
+- “比较小红书上对冲绳亲子游的建议。”
+
+每次研究会先建立候选池，再挑选 **5-10 篇**内容较完整、作者不重复、互动数据较好或较新的笔记阅读详情。返回内容会带原笔记链接、可获取的作者/互动数据，并展示 **3 张原笔记图片**。
+
+> 这是一个本机工具：小红书登录态、浏览器和采集过程都在你的电脑上。仓库不会保存你的账号、密码、Cookie 或笔记正文。
+
+## 你需要准备什么
+
+1. 一台 Mac。
+2. 已安装 [Node.js](https://nodejs.org/) 20 或更高版本。安装完成后，打开“终端”，输入 `node -v`；看到版本号就表示成功。
+3. 已安装 Codex 桌面端。
+4. 一个你愿意在网页端登录的小红书账号。请遵守小红书的平台规则；这个项目不会绕过验证码、风控或访问限制。
+
+## 第一次安装
+
+### 1. 下载项目
+
+如果你会用终端，在“终端”粘贴：
+
+```bash
+git clone https://github.com/<你的 GitHub 用户名>/rednote-research.git
+cd rednote-research
+```
+
+把 `<你的 GitHub 用户名>` 换成你的 GitHub 用户名。也可以在 GitHub 项目页面点击绿色的 **Code** 按钮，选择 **Download ZIP**，解压后在终端进入这个文件夹。
+
+### 2. 安装项目需要的组件
+
+在项目文件夹里运行：
+
+```bash
+npm install
+npx playwright install chromium
+```
+
+第二条命令会下载给采集器使用的浏览器。下载失败时，可以安装 [Google Chrome](https://www.google.com/chrome/)；后面的 Codex 配置会让工具优先使用它。
+
+### 3. 登录一次小红书
+
+仍在项目文件夹中运行：
+
+```bash
+XHS_AUTH_DIR=xhs-auth-test PLAYWRIGHT_BROWSERS_PATH=./.playwright-browsers node scripts/login-xhs.js --wait=300000
+```
+
+这会打开一个小红书网页：
+
+1. 用小红书 App 扫码登录，或用网页允许的登录方式完成登录。
+2. 登录成功后，**不要立刻关掉终端或浏览器**。
+3. 等终端出现 `登录态已保存`，再关掉浏览器窗口。
+
+登录信息只会保存在你电脑的 `xhs-auth-test/storage-state.json`。它已经被 Git 忽略，绝对不要上传、复制或发给其他人。
+
+如果终端显示超时，但网页左侧已经出现“我”或你能打开笔记详情，可以重新运行一次上面的命令，让工具重新检测并保存状态。
+
+## 连接到 Codex
+
+Rednote Research 由两个部分组成：
+
+- **Skill**：告诉 Codex 应该如何筛选笔记、阅读详情和总结。
+- **MCP 本机连接器**：在你的电脑上启动 Playwright，并复用你刚刚登录的小红书会话。
+
+### 1. 安装 Skill
+
+在项目文件夹中运行：
+
+```bash
+mkdir -p ~/.codex/skills
+cp -R "./projects/travel-discovery/skills/rednote-research" ~/.codex/skills/rednote-research
+```
+
+### 2. 找到两个本机路径
+
+在终端依次运行：
+
+```bash
+pwd
+which node
+```
+
+第一条会输出“项目绝对路径”，第二条会输出 Node.js 的绝对路径。下一步需要把它们复制进去。
+
+### 3. 编辑 Codex 的 MCP 配置
+
+打开文件：
+
+```text
+~/.codex/config.toml
+```
+
+在文件末尾粘贴以下内容，并替换所有尖括号里的内容：
+
+```toml
+[mcp_servers.travel-research]
+command = "<which node 的输出>"
+args = ["<项目绝对路径>/projects/travel-research-mcp/server.js"]
+cwd = "<项目绝对路径>"
+startup_timeout_sec = 120
+
+[mcp_servers.travel-research.env]
+XHS_AUTH_DIR = "<项目绝对路径>/xhs-auth-test"
+XHS_WEB_ORIGIN = "https://www.rednote.com"
+PLAYWRIGHT_BROWSERS_PATH = "<项目绝对路径>/.playwright-browsers"
+XHS_BROWSER_PATH = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+XHS_DISABLE_BROWSER_FALLBACK = "0"
+XHS_SEARCH_TIMEOUT_MS = "15000"
+```
+
+例如，`<项目绝对路径>` 如果是 `/Users/you/Documents/rednote-research`，就替换成完整的这段路径。不要保留尖括号。
+
+### 4. 完全退出并重新打开 Codex
+
+重启后，新开一个 task。技能列表里应出现 **Rednote Research**；Codex 也会有 `travel-research` 工具可调用。
+
+## 开始使用
+
+直接在 Codex 输入自然语言，例如：
+
+```text
+小红书搜索苏黎世一日游，读高赞笔记并总结大家都去哪、怎么安排、哪些坑。
+```
+
+采集时，Codex 会显示类似进度：
+
+```text
+已筛选详情笔记 1/8：笔记标题
+正在阅读小红书笔记 1/8：笔记标题
+```
+
+最终总结会说明基于多少篇笔记、多少篇成功读到详情，并附上原笔记链接、可用互动数据和 3 张原笔记图片。
+
+## 常见问题
+
+### 为什么读不到正文？
+
+小红书可能要求登录、出现安全限制，或临时拒绝访问。请先确认上面的登录步骤已经完成；如果仍失败，隔一段时间再试。工具会明确说明哪些信息没有取得，不会编造笔记内容、点赞数或图片。
+
+### 每次都要重新登录吗？
+
+通常不需要。登录态保存在你的电脑本地；当它自然失效、你主动退出账号，或平台要求重新验证时，才需要再次运行登录命令。
+
+### 图片保存在哪里？
+
+图片只为当前 MCP 调用临时转换和展示；临时文件会在 24 小时后自动清理。Codex 对话本身可能保留已显示的图片，这是 Codex 的对话记录行为。
+
+### 可以把小红书账号密码写进配置吗？
+
+不可以，也不需要。只通过网页扫码/登录完成一次会话保存。不要把 `storage-state.json` 上传到 GitHub。
+
+## 隐私与使用边界
+
+- 不提交、不分享账号密码、Cookie、`storage-state.json`、API Key 或 `.env.local`。
+- 不绕过验证码、平台风控或访问限制。
+- 互动数据只是热度参考，不代表信息一定正确；重要的票务、营业时间、签证或安全信息，请以官方渠道为准。
+
+## 开发者更新
+
+更新代码后，在项目文件夹运行：
+
+```bash
+git pull
+npm install
+```
+
+如果 Skill 文件有更新，重新运行“安装 Skill”那一小节的复制命令，然后重启 Codex。

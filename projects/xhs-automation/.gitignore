@@ -1,0 +1,9 @@
+node_modules/
+.npm-cache/
+.playwright-browsers/
+.env
+.env.*
+xhs-auth/
+xhs-auth-test/
+xhs-debug/
+output/

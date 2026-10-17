@@ -1,0 +1,4 @@
+interface:
+  display_name: "XHS Automation"
+  short_description: "Search and summarize Xiaohongshu/Rednote notes."
+  default_prompt: "Search Xiaohongshu notes for a keyword and summarize the useful details."

@@ -1,0 +1,21 @@
+node_modules/
+.npm-cache/
+.playwright-browsers/
+.env
+.env.*
+.DS_Store
+__pycache__/
+cache/
+
+# Local credentials and browser sessions. Never commit these.
+xhs-auth/
+xhs-auth-test/
+projects/travel-research-mcp/xhs-auth/
+**/storage-state.json
+
+# Local browser downloads, diagnostics, and generated travel files.
+xhs-debug/
+outputs/
+output/
+exports/
+*.zip

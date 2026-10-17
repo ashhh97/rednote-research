@@ -1,0 +1,13 @@
+{
+  "name": "xhs-automation",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "search": "PLAYWRIGHT_BROWSERS_PATH=../../.playwright-browsers node scripts/search-xhs.js",
+    "login": "PLAYWRIGHT_BROWSERS_PATH=../../.playwright-browsers node scripts/login-xhs.js"
+  },
+  "dependencies": {
+    "playwright": "^1.52.0"
+  }
+}

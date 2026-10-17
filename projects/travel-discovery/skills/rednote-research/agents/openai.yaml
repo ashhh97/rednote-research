@@ -1,0 +1,4 @@
+interface:
+  display_name: "Rednote Research"
+  short_description: "Search, read, and summarize real Rednote notes."
+  default_prompt: "小红书搜索苏黎世一日游，读高赞笔记并总结大家都去哪、怎么安排、哪些坑。"

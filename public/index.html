@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>旅游攻略 Agent</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="chat-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Travel Guide Agent</p>
+          <h1>旅游攻略生成器</h1>
+        </div>
+        <div class="top-actions">
+          <span class="model-pill">DeepSeek V4 Flash</span>
+          <span class="status" id="status">本地</span>
+        </div>
+      </header>
+
+      <section class="chat-panel" aria-live="polite">
+        <div class="messages" id="messages"></div>
+      </section>
+
+      <section class="composer">
+        <form id="chatForm">
+          <textarea
+            id="promptInput"
+            name="prompt"
+            rows="1"
+            placeholder="告诉我你想去哪，比如：7月去巴厘岛玩6天，想拍照、美食、别太累"
+            required
+          ></textarea>
+          <button id="sendBtn" type="submit">发送</button>
+        </form>
+      </section>
+    </main>
+
+    <template id="messageTemplate">
+      <article class="message">
+        <div class="avatar"></div>
+        <div class="bubble"></div>
+      </article>
+    </template>
+
+    <script src="/app.js"></script>
+  </body>
+</html>

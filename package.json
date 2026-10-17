@@ -1,0 +1,13 @@
+{
+  "name": "travel-guide-agent",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "PLAYWRIGHT_BROWSERS_PATH=./.playwright-browsers node src/server.js",
+    "dev": "PLAYWRIGHT_BROWSERS_PATH=./.playwright-browsers node src/server.js"
+  },
+  "dependencies": {
+    "playwright": "^1.52.0"
+  }
+}
