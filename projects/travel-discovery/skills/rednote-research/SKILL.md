@@ -57,6 +57,8 @@ Base conclusions on detail text whenever it was obtained. Distinguish clearly:
 
 Never fabricate note links, authors, dates, images, or interaction metrics. If only a search card was available, say `仅检索卡片，未读取详情`. If collection is blocked, say `小红书详情未取得` and stop there; do not silently replace it with public web research unless the user explicitly asks for other sources.
 
+For every note shown in the source list, always include both `赞：...` and `收藏：...` from that note's `stats.likedCount` and `stats.collectedCount`. If either value is absent, write `未取得` for that field; do not treat missing data as zero. Show `0` only when the source explicitly reports zero. Comments and publication date remain optional.
+
 ## Images
 
 Images are required evidence for every user-facing research summary. Return exactly 3 representative original images from the Rednote notes whenever at least three usable images were obtained. Select images that best illustrate the conclusion and, when possible, draw them from different notes rather than showing three near-duplicates.
@@ -83,7 +85,7 @@ Then adapt the structure to the user’s question. A typical summary should incl
 - 分歧、避坑或不适合的人群
 
 ## 值得看
-1. [笔记标题](链接) · 作者 · 日期（如有）· 赞/藏/评（如有）
+1. [笔记标题](链接) · 作者 · 赞：数值或未取得 · 收藏：数值或未取得 · 评论/日期（如有）
    - 与问题相关的关键信息
 2. ...
 

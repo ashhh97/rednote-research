@@ -203,6 +203,11 @@ export async function scrapeXiaohongshu({
           title: note.title || note.url
         });
         const detail = await fetchNoteDetailByNavigation(context, note, networkDiagnostics);
+        for (const key of ["likedCount", "collectedCount", "commentCount"]) {
+          if (detail?.stats?.[key] !== "" && detail?.stats?.[key] != null) {
+            note.stats[key] = detail.stats[key];
+          }
+        }
         if (detail?.text || detail?.images?.length) {
           if (isUsefulDetailText(detail.text, note.title)) note.text = detail.text;
           note.images = Array.from(new Set([...(note.images || []), ...(detail.images || [])].filter(isUsefulImage))).slice(0, 8);
@@ -456,9 +461,9 @@ function extractCardsFromSearchApi(text) {
       const title = card.display_title || card.title || "";
       const desc = card.desc || "";
       const userName = card.user?.nickname || card.user?.nick_name || "";
-      const likedCount = card.interact_info?.liked_count || "";
-      const collectedCount = card.interact_info?.collected_count || "";
-      const commentCount = card.interact_info?.comment_count || "";
+      const likedCount = card.interact_info?.liked_count ?? "";
+      const collectedCount = card.interact_info?.collected_count ?? "";
+      const commentCount = card.interact_info?.comment_count ?? "";
       const tags = Array.isArray(card.tag_list) ? card.tag_list.map((tag) => tag.name).filter(Boolean) : [];
       const ipLocation = card.ip_location || "";
       const cover = card.cover?.url_pre || card.cover?.url_default || "";
@@ -609,7 +614,12 @@ function parseNoteDetailFromFeedApi(text) {
       userName ? `作者：${userName}` : "",
       tags.length ? `标签：${tags.join("、")}` : ""
     ].filter(Boolean).join("\n"),
-    images
+    images,
+    stats: {
+      likedCount: card.interact_info?.liked_count ?? "",
+      collectedCount: card.interact_info?.collected_count ?? "",
+      commentCount: card.interact_info?.comment_count ?? ""
+    }
   };
 }
 
