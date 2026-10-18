@@ -44,3 +44,26 @@ test("selection stays within available notes and the requested limit", () => {
   const notes = Array.from({ length: 15 }, (_, index) => note(`护肤体验${index}`, "护肤", `作者${index}`));
   assert.ok(selectDetailNotes(notes, 10).notes.length <= 10);
 });
+
+test("off-platform contact and recruitment lightly lower selection priority", () => {
+  const normal = note("苏黎世咖啡体验", "苏黎世咖啡", "甲");
+  const promotional = { ...note("苏黎世咖啡体验", "苏黎世咖啡", "乙"), text: "苏黎世咖啡体验，拼团报名名额有限，私信加微联系" };
+  const result = selectDetailNotes([promotional, normal], 5);
+  assert.equal(result.notes[0].author, "甲");
+  assert.ok(result.selections[1].reasons.some((reason) => reason.includes("站外联系")));
+  assert.ok(result.selections[1].reasons.some((reason) => reason.includes("招揽服务")));
+});
+
+test("ordinary student activity is not treated as recruitment", () => {
+  const studentVisit = { ...note("带学生参观博物馆", "博物馆", "甲"), text: "带学生参观博物馆的记录" };
+  const result = selectDetailNotes([studentVisit], 5);
+  assert.equal(result.selections[0].reasons.some((reason) => reason.includes("招揽服务")), false);
+});
+
+test("comment spam signal requires actual comment text", () => {
+  const clean = note("咖啡机使用体验", "咖啡机", "甲");
+  const spam = { ...note("咖啡机使用体验", "咖啡机", "乙"), comments: ["求发", "求发", "求发", "求发", "真实感受"] };
+  const result = selectDetailNotes([spam, clean], 5);
+  assert.equal(result.notes[0].author, "甲");
+  assert.ok(result.selections[1].reasons.some((reason) => reason.includes("评论出现重复")));
+});
