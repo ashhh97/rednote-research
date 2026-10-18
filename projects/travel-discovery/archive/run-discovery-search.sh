@@ -2,7 +2,7 @@
 set -euo pipefail
 
 SCRIPT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-ROOT_DIR="${TRAVEL_AGENT_ROOT:-$(cd "$SCRIPT_ROOT/../../../../.." && pwd)}"
+ROOT_DIR="${TRAVEL_AGENT_ROOT:-$(cd "$SCRIPT_ROOT/../../.." && pwd)}"
 cd "$ROOT_DIR"
 
 export XHS_AUTH_DIR="${XHS_AUTH_DIR:-xhs-auth-test}"

@@ -88,7 +88,7 @@ function toolDefinitions() {
     },
     {
       name: "xhs_search_batch",
-      description: "Run several Rednote/Xiaohongshu searches for a destination and return a deduplicated note set.",
+      description: "Run several related Rednote/Xiaohongshu searches and return a deduplicated note set.",
       inputSchema: {
         type: "object",
         properties: {
@@ -173,7 +173,7 @@ async function callTool(name, args, meta) {
 async function runLogin({ waitMs, progressToken }) {
   sendProgress(progressToken, 0, 1, "正在打开本机浏览器，请在小红书页面完成登录。");
   const result = await scrapeXiaohongshu({
-    keywords: ["旅行攻略"],
+    keywords: ["小红书"],
     maxNotes: 1,
     headless: false,
     fetchDetails: false,

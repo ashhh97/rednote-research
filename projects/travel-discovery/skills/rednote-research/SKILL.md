@@ -5,18 +5,18 @@ description: Search Rednote/Xiaohongshu, read selected note details, and summari
 
 # Rednote Research
 
-Use this skill to research a topic primarily through Xiaohongshu/Rednote notes and turn the findings into an evidence-backed summary. It is a research skill, not a travel-planning workflow: do not force the user through destination selection, food selection, map pinning, or a full itinerary.
+Use this skill to search Xiaohongshu/Rednote notes, read selected details, and answer the user's question with source-backed findings. Apply no default topic, category, or travel workflow; the user's prompt determines what to search and how to organize the answer.
 
 ## Scope
 
 Accept a natural-language topic such as:
 
-- `小红书搜索苏黎世一日游`
-- `读高赞的济州岛咖啡厅笔记，告诉我大家为什么去`
-- `总结小红书上大家一般怎么安排瑞士 5 天游`
-- `比较这几个笔记里对冲绳亲子游的建议`
+- `小红书搜索某款防晒霜，看看真实使用感`
+- `读高赞的租房避坑笔记，比较大家的建议`
+- `总结小红书上关于入门咖啡机的常见评价`
+- `比较这几个笔记对同一款产品的不同看法`
 
-If the user has not provided a search target, ask for only the topic or destination. Infer useful query variants yourself; do not make the user provide keywords first.
+If the user has not provided a search target, ask only for the topic. Infer useful query variants yourself; do not make the user provide keywords first.
 
 ## Search And Detail Reading
 
@@ -29,11 +29,11 @@ Use the registered `travel-research` MCP server when it is available:
 
 For a normal request, retrieve enough search cards to form a varied candidate pool, deduplicate them, then select 5-10 high-quality notes for detail reading. Use the lower end only when results are sparse or highly repetitive; do not always open the first results. Prefer notes with:
 
-- a complete route, D1/D2/D3, list, or other substantive structure;
-- useful coverage of different areas, viewpoints, or alternatives;
-- available likes, saves, comments, and recent publication;
+- strong relevance to the user's search topic and substantive detail;
+- useful coverage of different viewpoints or alternatives;
+- available likes, saves, comments, and publication dates where provided;
 - diverse authors;
-- usable body text and images.
+- usable body text and original images.
 
 For requests that explicitly ask for “最高赞” or “高收藏”, give engagement more weight, but still reject thin, duplicate, or stale notes. Engagement is a popularity signal, not proof.
 
@@ -63,12 +63,11 @@ For every note shown in the source list, always include both `赞：...` and `�
 
 Images are required evidence for every user-facing research summary. Return exactly 3 representative original images from the Rednote notes whenever at least three usable images were obtained. Select images that best illustrate the conclusion and, when possible, draw them from different notes rather than showing three near-duplicates.
 
-- Use the 3-image set for every normal result; when the user asks “图片长什么样”、`配图`、`地点对比` or equivalent, choose the three images around that specific question.
+- Use the 3-image set for every normal result; choose images relevant to the user's actual question.
 - These must be original images attached to the read notes, not separately searched or generated visuals.
-- For independent images of named places, use `xhs_place_images` only when the user specifically asks for place-by-place visuals.
 - Render only MCP-provided image blocks or its absolute local `imagePaths`, for example `![灵隐寺](/private/tmp/example.jpg)`.
 - Do not use Rednote CDN URLs directly. They expire and commonly render as blank placeholders.
-- If fewer than three images are available, show every usable original image and state how many were obtained. If none is available, state `未取得可展示图片`; never reuse an unrelated route cover as a place image.
+- If fewer than three images are available, show every usable original image and state how many were obtained. If none is available, state `未取得可展示图片`; never use an unrelated image as evidence.
 
 ## Response Format
 
@@ -79,17 +78,17 @@ Start every response with an evidence count using current data only:
 Then adapt the structure to the user’s question. A typical summary should include:
 
 ```markdown
-## 小红书结论
-- 高频共识
-- 值得优先看的建议
-- 分歧、避坑或不适合的人群
+## 主要发现
+- 与问题直接相关的发现
+- 多篇笔记重复出现的看法
+- 分歧或局限
 
 ## 值得看
 1. [笔记标题](链接) · 作者 · 赞：数值或未取得 · 收藏：数值或未取得 · 评论/日期（如有）
    - 与问题相关的关键信息
 2. ...
 
-## 我的归纳
+## 归纳
 - 清楚说明哪些是多篇共识，哪些仍需核实。
 
 ## 原笔记图片
@@ -98,7 +97,7 @@ Then adapt the structure to the user’s question. A typical summary should incl
 ![图片 3](absolute local image path)
 ```
 
-For travel topics, you may group findings into `常见路线`、`高频地点`、`餐饮/住宿/交通` or `避坑`, but only when the collected notes support those groups. Do not produce a full day-by-day itinerary unless the user explicitly asks for one after the summary.
+Use the categories or comparison dimensions requested in the user's prompt. Do not add a fixed outline for travel, products, food, or any other topic.
 
 ## Failure Handling
 

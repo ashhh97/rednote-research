@@ -1,6 +1,6 @@
-# Travel Research MCP
+# Rednote Research MCP
 
-这是旅行探索 Skill 的本机 MCP 工具层。它复用仓库里的 Playwright 小红书采集器，由 Codex 作为 host-level MCP 进程启动，不使用 localhost，也不依赖 Codex 沙盒的网络端口。
+这是 Rednote Research Skill 的本机 MCP 工具层。它复用仓库里的 Playwright 小红书采集器，由 Codex 作为 host-level MCP 进程启动，不使用 localhost，也不依赖 Codex 沙盒的网络端口。
 
 ## Tools
 

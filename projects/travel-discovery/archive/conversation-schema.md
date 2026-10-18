@@ -1,6 +1,6 @@
-# Conversation Schema
+# Archived Travel Conversation Schema
 
-Keep the working state separate from the prose answer:
+The following schema belonged to the earlier travel-planning workflow. It is retained for a possible future travel-specific skill and is not used by Rednote Research.
 
 ```json
 {

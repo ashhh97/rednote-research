@@ -156,7 +156,7 @@ xhs-auth-test/storage-state.json
 cd "/Users/yz/Library/CloudStorage/OneDrive-个人/travelagent"
 
 TRAVEL_AGENT_ROOT="$PWD" \
-projects/travel-discovery/skills/rednote-research/scripts/run-discovery-search.sh \
+projects/travel-discovery/archive/run-discovery-search.sh \
   --destination "花鸟岛" \
   --mode discovery \
   --maxNotes 1 \
